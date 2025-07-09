@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controller\MapelController;
+use App\Http\Controllers\MapelController;
 
 /*
 |--------------------------------------------------------------------------
