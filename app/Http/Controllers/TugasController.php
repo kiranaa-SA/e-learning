@@ -57,7 +57,7 @@ class TugasController extends Controller
         // Simpan soal
         foreach ($request->soal as $i => $pertanyaan) {
             SoalTugas::create([
-                'tugas_id'       => $tugas->id,
+                'id_tugas'       => $tugas->id,
                 'pertanyaan'    => $pertanyaan,
                 'pilihan_a'     => $request->opsi[$i]['A'] ?? '',
                 'pilihan_b'     => $request->opsi[$i]['B'] ?? '',

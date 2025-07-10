@@ -102,6 +102,9 @@ class MateriController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+     $materi = Materi::findOrFail($id);
+    $materi->delete();
+    return redirect()->route('materi.index')->with('success', 'Data berhasil dihapus');
+
     }
 }

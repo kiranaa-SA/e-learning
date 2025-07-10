@@ -12,7 +12,7 @@ class KelasController extends Controller
     public function index()
     {
         $kelas = Kelas::all();
-        return view('kelas.index', compact('kelas'));
+        return view('admin.kelas.index', compact('kelas'));
 
     }
 
@@ -21,7 +21,7 @@ class KelasController extends Controller
      */
     public function create()
     {
-        return view('kelas.create');
+        return view('admin.kelas.create');
 
     }
 

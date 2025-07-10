@@ -36,7 +36,7 @@
                 <div class="row">
                     <div class="col-lg-12">
                         <div class="card-style mb-30">
-                            <a href="{{ route('quiz.create') }}" class="btn btn-primary">
+                            <a href="{{ route('tugas.create') }}" class="btn btn-primary">
                                 <i class="mdi mdi-plus-box"></i> Tambah
                             </a>
                             <div class="table-wrapper table-responsive">

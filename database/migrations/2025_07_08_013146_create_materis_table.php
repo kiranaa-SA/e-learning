@@ -19,11 +19,9 @@ return new class extends Migration
             $table->text('isi_materi');
             $table->unsignedBigInteger('id_mapel');
             $table->unsignedBigInteger('id_kelas');
-            $table->unsignedBigInteger('id_guru');
             $table->timestamps();
             $table->foreign('id_mapel')->references('id')->on('mapels')->onDelete('cascade');
             $table->foreign('id_kelas')->references('id')->on('kelas')->onDelete('cascade');
-            $table->foreign('id_guru')->references('id')->on('users')->onDelete('cascade');
         });
     }
 
