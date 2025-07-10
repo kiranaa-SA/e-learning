@@ -18,9 +18,11 @@ return new class extends Migration
             $table->string('kode_quiz')->unique();
             $table->string('judul');
             $table->integer('jumlah_soal');
+            $table->unsignedBigInteger('id_mapel');
             $table->integer('waktu_pengerjaan');
             $table->date('tenggat_waktu');
             $table->timestamps();
+            $table->foreign('id_mapel')->references('id')->on('mapels')->onDelete('cascade');
         });
     }
 

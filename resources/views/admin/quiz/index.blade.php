@@ -53,6 +53,9 @@
                                                 <h6>Judul</h6>
                                             </th>
                                             <th class="lead-company">
+                                                <h6>Mapel</h6>
+                                            </th>
+                                            <th class="lead-company">
                                                 <h6>Jumlah Soal</h6>
                                             </th>
                                             </th>
@@ -81,6 +84,9 @@
                                                 </td>
                                                 <td class="min-width">
                                                     <p>{{ $data->judul }}</p>
+                                                </td>
+                                                 <td class="min-width">
+                                                    <p>{{ $data->mapel->nama_mapel}}</p>
                                                 </td>
                                                 <td class="min-width">
                                                     <p>{{ $data->jumlah_soal }}</p>

@@ -10,4 +10,5 @@ class Mapel extends Model
     use HasFactory;
     protected $fillable = ['id','nama_mapel','kode_mapel','create_at','update_at'] ;
     public $timestamps = true;
+    
  }
