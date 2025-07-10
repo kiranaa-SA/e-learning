@@ -8,7 +8,7 @@
             <div class="row align-items-center">
                 <div class="col-md-6">
                     <div class="title">
-                        <h2>{{ $tugas->judul }}</h2>
+                        <h2>{{ $quiz->judul }}</h2>
                     </div>
                 </div>
                 <div class="col-md-6">
@@ -18,9 +18,9 @@
                                 <li class="breadcrumb-item">
                                     <a href="#0">Dashboard</a>
                                 </li>
-                                <li class="breadcrumb-item"><a href="#0">tugas</a></li>
+                                <li class="breadcrumb-item"><a href="#0">Quiz</a></li>
                                 <li class="breadcrumb-item active" aria-current="page">
-                                    Edit tugas
+                                    Edit Quiz
                                 </li>
                             </ol>
                         </nav>
@@ -34,22 +34,30 @@
         <div class="form-elements-wrapper">
             <div class="row">
                 <div class="col-lg-12">
-                    <form action="{{ route('tugas.update', $tugas->id) }}" method="POST">
+                    <form action="{{ route('quiz.update', $quiz->id) }}" method="POST">
                         @csrf
                         @method('PUT')
 
                         <div class="card-style mb-30">
                             <div class="input-style-1">
                                 <label>Judul</label>
-                                <input type="text" name="judul" value="{{ $tugas->judul }}" disabled/>
+                                <input type="text" name="judul" value="{{ $quiz->judul }}" disabled/>
                             </div>
                             <div class="input-style-1">
                                 <label>Mapel</label>
-                                <input type="text" name="mapel" value="{{ $tugas->mapel->nama_mapel }}" disabled/>
+                                <input type="text" name="mapel" value="{{ $quiz->mapel->nama_mapel }}" disabled/>
+                            </div>
+                            <div class="input-style-1">
+                                <label>Waktu Pengerjaan (menit)</label>
+                                <input type="number" name="waktu_pengerjaan" value="{{ $quiz->waktu_pengerjaan }}" disabled/>
+                            </div>
+                            <div class="input-style-1">
+                                <label>Tenggat Waktu</label>
+                                <input type="date" name="tenggat_waktu" value="{{ $quiz->tenggat_waktu }}" disabled/>
                             </div>
                         </div>
 
-                        @foreach ($tugas->soal as $i => $item)
+                        @foreach ($quiz->soal as $i => $item)
                             <div class="card-style mb-30">
                                 <div class="input-style-1">
                                     <label>Soal {{ $i+1 }}</label>

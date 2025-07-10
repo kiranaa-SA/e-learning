@@ -44,9 +44,18 @@
                                 <input type="text" name="judul" value="{{ $quiz->judul }}" required />
                             </div>
                             <div class="input-style-1">
-                                <label>Mapel</label>
-                                <input type="text" name="mapel" value="{{ $quiz->mapel->nama_mapel }}" required />
-                            </div>
+                  <label>Mapel</label>
+                  <div class="select-style-1">
+                    <div class="select-position">
+                      <select name="id_mapel" required>
+                        <option disabled selected value="">{{ $quiz->mapel->nama_mapel}}</option>
+                        @foreach($mapel as $m)
+                          <option value="{{ $m->id }}">{{ $m->nama_mapel }}</option>
+                        @endforeach
+                      </select>
+                    </div>
+                  </div>
+                </div>
                             <div class="input-style-1">
                                 <label>Waktu Pengerjaan (menit)</label>
                                 <input type="number" name="waktu_pengerjaan" value="{{ $quiz->waktu_pengerjaan }}" required />

@@ -71,7 +71,7 @@ public function store(Request $request)
         ]);
     }
 
-    return redirect()->route('quiz.index', compact('mapel'))->with('success', 'Quiz berhasil dibuat!');
+    return redirect()->route('quiz.index')->with('success', 'Quiz berhasil dibuat!');
 }
 
 
@@ -84,7 +84,7 @@ public function store(Request $request)
     public function show(string $id)
     {
         $quiz = Quiz::findOrFail($id);
-        return view('quiz.show', compact('quiz'));
+        return view('admin.quiz.show', compact('quiz'));
 
     }
 
@@ -93,8 +93,9 @@ public function store(Request $request)
      */
     public function edit(Quiz $quiz)
 {
+    $mapel = Mapel::all();
     $soal = $quiz->soal()->get();
-    return view('admin.quiz.edit', compact('quiz', 'soal'));
+    return view('admin.quiz.edit', compact('quiz', 'soal','mapel'));
 }
 
 public function update(Request $request, Quiz $quiz)
@@ -110,6 +111,7 @@ public function update(Request $request, Quiz $quiz)
 
     $quiz->update([
         'judul' => $request->judul,
+        'id_mapel' => $request->id_mapel,
         'waktu_pengerjaan' => $request->waktu_pengerjaan,
         'tenggat_waktu' => $request->tenggat_waktu,
     ]);
@@ -134,6 +136,9 @@ public function update(Request $request, Quiz $quiz)
      */
     public function destroy(string $id)
     {
-        // 
+        $quiz = Quiz::findOrFail($id);
+        $quiz->delete();
+
+        return redirect()->route('quiz.index')->with('success', 'Quiz berhasil dihapus.');
     }
 }

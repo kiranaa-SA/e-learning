@@ -1,113 +1,112 @@
 @extends('layouts.backend')
 @section('content')
-    <section class="tab-components">
-        <div class="container-fluid">
-            <!-- ========== title-wrapper start ========== -->
-            <div class="title-wrapper pt-30">
-                <div class="row align-items-center">
-                    <div class="col-md-6">
-                        <div class="title">
-                            <h2>Tambah Data Tugas</h2>
-                        </div>
-                    </div>
-                    <!-- end col -->
-                    <div class="col-md-6">
-                        <div class="breadcrumb-wrapper">
-                            <nav aria-label="breadcrumb">
-                                <ol class="breadcrumb">
-                                    <li class="breadcrumb-item">
-                                        <a href="#">Dashboard</a>
-                                    </li>
-                                    <li class="breadcrumb-item"><a href="#0">Tambah</a></li>
-                                </ol>
-                            </nav>
-                        </div>
-                    </div>
-                    <!-- end col -->
-                </div>
-                <!-- end row -->
-            </div>
-            <!-- ========== title-wrapper end ========== -->
 
-            <!-- ========== form-elements-wrapper start ========== -->
-            <div class="form-elements-wrapper">
-                <div class="row">
-                        <div class="col-lg-12">
-                            <!-- input style start -->
-                            @if (isset($_GET['next']))
-                                @php
-                                    $judul = $_GET['judul'];
-                                    $mapel = $_GET['id_mapel'];
-                                    $jumlah_soal = $_GET['jumlah_soal'];
-                                @endphp
-                                @for ($i = 1; $i <= $jumlah_soal; $i++)
-                                    <div class="card-style mb-30">
-                                        <div class="input-style-1">
-                                            <label>Soal {{ $i }}</label>
-                                            <input type="text" placeholder="Masukkan Soal" name="soal" />
-                                        </div>
-                                        <input type="checkbox" name="" id="">A
-                                        <br>
-                                        <input type="checkbox" name="" id="">B
-                                        <br>
-                                        <input type="checkbox" name="" id="">C
-                                        <br>
-                                        <input type="checkbox" name="" id="">D
-                                        <div class="input-style-1">
-                                            <label>Jawaban</label>
-                                            <select name="jawaban" id="">
-                                                <option value="A">A</option>
-                                                <option value="B">B</option>
-                                                <option value="C">C</option>
-                                                <option value="D">D</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                @endfor
-                            @else
-                                <div class="card-style mb-30">
-                                    <h6 class="mb-25">Masukan Data</h6>
-                                    <form action="" method="get">
-                                      @csrf
-                                    <div class="input-style-1">
-                                        <label>Judul</label>
-                                        <input type="text" name="judul" placeholder="Masukan Judul" />
-                                    </div>
-                                    <!-- end input -->
-                                    <div class="input-style-2">
-                                        <div class="select-style-1">
-                                            <label>Mapel</label>
-                                            <div class="select-position">
-                                                <select name="id_mapel">
-                                                    @foreach ($mapel as $data)
-                                                        <option value="{{ $data->id }}">{{ $data->nama_mapel }}</option>
-                                                    @endforeach
-                                                </select>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <!-- end input -->
-                                    <div class="input-style-3">
-                                        <label>Jumlah Soal</label>
-                                        <input type="number" name="jumlah_soal"
-                                        placeholder="Masukan jumlah Soal" />
-                                    </div>
+<section class="tab-components">
+  <div class="container-fluid">
 
-                                    <button type="submit" class="btn btn-primary" name="next">Submit</button>
-                                    <a href="{{ route('tugas.index') }}" class="btn btn-primary">Kembali</a>
-                                    <!-- end input -->
-                                </div>
-                              </form>
-                                @endif
-                                <!-- end card -->
-                                <!-- ======= input style end ======= -->
-                        </div>
-                        <!-- end col -->
-                </div>
-                <!-- end row -->
-            </div>
-            <!-- ========== form-elements-wrapper end ========== -->
+    <div class="title-wrapper pt-30">
+      <div class="row align-items-center">
+        <div class="col-md-6">
+          <div class="title">
+            <h2>Form Quiz</h2>
+          </div>
         </div>
-        <!-- end container -->
-    </section>
+        <div class="col-md-6">
+          <div class="breadcrumb-wrapper">
+            <nav aria-label="breadcrumb">
+              <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="#0">Dashboard</a></li>
+                <li class="breadcrumb-item"><a href="#0">Forms</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Form Elements</li>
+              </ol>
+            </nav>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-elements-wrapper">
+      <div class="row">
+        <div class="col-lg-12">
+
+          {{-- Bagian 1: Form input soal --}}
+          @if(request()->has('next'))
+            @php 
+              $judul = request('judul');
+              $id_mapel = request('id_mapel');
+              $jumlah_soal = request('jumlah_soal');
+            @endphp
+
+            <form action="{{ route('tugas.store') }}" method="POST">
+              @csrf
+              <input type="hidden" name="judul" value="{{ $judul }}">
+              <input type="hidden" name="id_mapel" value="{{ $id_mapel }}">
+              <input type="hidden" name="jumlah_soal" value="{{ $jumlah_soal }}">
+
+
+              @for($i = 0; $i < $jumlah_soal; $i++)
+              <div class="card-style mb-30">
+                <div class="input-style-1">
+                  <label>Soal {{ $i+1 }}</label>
+                  <input type="text" name="soal[{{ $i }}]" placeholder="Masukkan Soal" required>
+                </div>
+
+                <label>Pilihan Jawaban</label><br>
+                @foreach(['A', 'B', 'C', 'D'] as $option)
+                  <div>
+                    <input type="radio" name="jawaban_benar[{{ $i }}]" value="{{ $option }}" required>
+                    {{ $option }} <input type="text" name="opsi[{{ $i }}][{{ $option }}]" placeholder="Jawaban {{ $option }}" required>
+                  </div>
+                @endforeach
+              </div>
+            
+              @endfor
+
+              <div class="col-12">
+                <button type="submit" class="btn btn-primary">Simpan Soal</button>
+              </div>
+            </form>
+
+          {{-- Bagian 2: Form input metadata quiz --}}
+          @else
+            <div class="card-style mb-30">
+              <h6 class="mb-25">Informasi Quiz</h6>
+              <form action="" method="get">
+                <div class="input-style-1">
+                  <label>Judul</label>
+                  <input type="text" name="judul" placeholder="Judul" required />
+                </div>
+
+                <div class="input-style-1">
+                  <label>Mapel</label>
+                  <div class="select-style-1">
+                    <div class="select-position">
+                      <select name="id_mapel" required>
+                        <option disabled selected value="">Pilih Mapel</option>
+                        @foreach($mapel as $m)
+                          <option value="{{ $m->id }}">{{ $m->nama_mapel }}</option>
+                        @endforeach
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="input-style-1">
+                  <label>Jumlah Soal</label>
+                  <input type="number" name="jumlah_soal" min="1" required />
+                </div>
+
+                <div class="col-12">
+                  <button type="submit" name="next" class="btn btn-primary">Lanjut Input Soal</button>
+                </div>
+              </form>
+            </div>
+          @endif
+
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
 @endsection

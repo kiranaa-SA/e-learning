@@ -1,86 +1,111 @@
 @extends('layouts.backend')
 @section('content')
-    <section class="tab-components">
-        <div class="container-fluid">
-            <!-- ========== title-wrapper start ========== -->
-            <div class="title-wrapper pt-30">
-                <div class="row align-items-center">
-                    <div class="col-md-6">
-                        <div class="title">
-                            <h2>Edit Data Tugas</h2>
-                        </div>
-                    </div>
-                    <!-- end col -->
-                    <div class="col-md-6">
-                        <div class="breadcrumb-wrapper">
-                            <nav aria-label="breadcrumb">
-                                <ol class="breadcrumb">
-                                    <li class="breadcrumb-item">
-                                        <a href="#">Dashboard</a>
-                                    </li>
-                                    <li class="breadcrumb-item"><a href="#0">Edit</a></li>
-                                </ol>
-                            </nav>
-                        </div>
-                    </div>
-                    <!-- end col -->
-                </div>
-                <!-- end row -->
-            </div>
-            <!-- ========== title-wrapper end ========== -->
 
-            <!-- ========== form-elements-wrapper start ========== -->
-            <div class="form-elements-wrapper">
-                <div class="row">
-                    <form action="{{ Route('tugas.update', $tugas->id) }}" method="post" enctype="multipart/form-data">
+<section class="tab-components">
+    <div class="container-fluid">
+        <!-- ========== title-wrapper start ========== -->
+        <div class="title-wrapper pt-30">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <div class="title">
+                        <h2>Edit tugas</h2>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="breadcrumb-wrapper">
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item">
+                                    <a href="#0">Dashboard</a>
+                                </li>
+                                <li class="breadcrumb-item"><a href="#0">tugas</a></li>
+                                <li class="breadcrumb-item active" aria-current="page">
+                                    Edit tugas
+                                </li>
+                            </ol>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- ========== title-wrapper end ========== -->
+
+        <!-- ========== form-elements-wrapper start ========== -->
+        <div class="form-elements-wrapper">
+            <div class="row">
+                <div class="col-lg-12">
+                    <!-- Display validation errors -->
+                    @if ($errors->any())
+                        <div class="alert alert-danger">
+                            <ul>
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
+
+                    <form action="{{ route('tugas.update', $tuga) }}" method="POST">
                         @csrf
                         @method('PUT')
-                        <div class="col-lg-12">
-                            <!-- input style start -->
-                            <div class="card-style mb-30">
-                                <h6 class="mb-25">Masukan Data</h6>
-                                <div class="input-style-1">
-                                    <label>Judul</label>
-                                    <input type="text" name="judul" value="{{ $tugas->judul }}" required
-                                        class="@error('judul') is-invalid @enderror" />
-                                </div>
-                                <!-- end input -->
-                                <div class="input-style-2">
-                                    <div class="select-style-1">
-                                        <label>Mapel</label>
-                                        <div class="select-position">
-                                            <select name="id_mapel">
-                                                @foreach ($mapel as $data)
-                                                    <option value="{{ $data->id }}"
-                                                        {{ $data->id == $tugas->id_mapel ? 'selected' : '' }}>
-                                                        {{ $data->nama_mapel }}
-                                                    </option>
-                                                @endforeach
-                                            </select>
-                                        </div>
+
+                        <div class="card-style mb-30">
+                            <div class="input-style-1">
+                                <label>Judul</label>
+                                <input type="text" name="judul" value="{{ old('judul', $tuga->judul) }}" required />
+                            </div>
+                            
+                            <div class="input-style-1">
+                                <label>Mapel</label>
+                                <div class="select-style-1">
+                                    <div class="select-position">
+                                        <select name="id_mapel" required>
+                                            <option disabled value="">Pilih Mapel</option>
+                                            @foreach($mapel as $m)
+                                                <option value="{{ $m->id }}" 
+                                                    {{ old('id_mapel', $tuga->id_mapel) == $m->id ? 'selected' : '' }}>
+                                                    {{ $m->nama_mapel }}
+                                                </option>
+                                            @endforeach
+                                        </select>
                                     </div>
                                 </div>
-                                <!-- end input -->
-                                <div class="input-style-3">
-                                    <label>Jumlah Soal</label>
-                                    <input type="number" name="jumlah_soal" value="{{ $tugas->jumlah_soal }}" required
-                                        class="@error('jumlah_soal') is-invalid @enderror" />
-                                </div>
-
-                                <button type="submit" class="btn btn-primary">Submit</button>
-                                <a href="{{ route('tugas.index') }}" class="btn btn-primary">Kembali</a>
-                                <!-- end input -->
                             </div>
-                            <!-- end card -->
-                            <!-- ======= input style end ======= -->
                         </div>
-                        <!-- end col -->
+
+                        @foreach ($tuga->soal as $i => $item)
+                            <div class="card-style mb-30">
+                                <div class="input-style-1">
+                                    <label>Soal {{ $i+1 }}</label>
+                                    <input type="text" name="soal[{{ $i }}]" 
+                                           value="{{ old('soal.'.$i, $item->pertanyaan) }}" required />
+                                </div>
+                                
+                                <label>Pilihan Jawaban</label><br>
+                                @foreach(['A', 'B', 'C', 'D'] as $opt)
+                                    <div style="margin-bottom: 10px;">
+                                        <input type="radio" name="jawaban_benar[{{ $i }}]" 
+                                               value="{{ $opt }}" 
+                                               id="jawaban_{{ $i }}_{{ $opt }}"
+                                               {{ old('jawaban_benar.'.$i, $item->jawaban_benar) == $opt ? 'checked' : '' }}>
+                                        <label for="jawaban_{{ $i }}_{{ $opt }}">{{ $opt }}</label>
+                                        <input type="text" name="opsi[{{ $i }}][{{ $opt }}]" 
+                                               value="{{ old('opsi.'.$i.'.'.$opt, $item['pilihan_'.strtolower($opt)]) }}" 
+                                               required style="margin-left: 10px;" />
+                                    </div>
+                                @endforeach
+                            </div>
+                        @endforeach
+
+                        <div class="col-12">
+                            <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+                            <a href="{{ route('tugas.index') }}" class="btn btn-secondary">Batal</a>
+                        </div>
                     </form>
                 </div>
-                <!-- end row -->
             </div>
-            <!-- ========== form-elements-wrapper end ========== -->
         </div>
-        <!-- end container -->
-    </section>
+    </div>
+</section>
+
 @endsection

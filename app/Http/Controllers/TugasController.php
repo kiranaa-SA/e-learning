@@ -1,7 +1,9 @@
 <?php
 namespace App\Http\Controllers;
 
+use App\Models\Mapel;
 use App\Models\Tugas;
+use App\Models\SoalTugas;
 use Illuminate\Http\Request;
 
 class TugasController extends Controller
@@ -11,8 +13,10 @@ class TugasController extends Controller
      */
     public function index()
     {
-        $tugas = Tugas::all();
-        return view('admin.tugas.index', compact('tugas'));
+        $tugas  = Tugas::all();
+        $mapel = Mapel::all();
+        return view('admin.tugas.index', compact('tugas', 'mapel'));
+
     }
 
     /**
@@ -20,8 +24,8 @@ class TugasController extends Controller
      */
     public function create()
     {
-        $tugas = Tugas::all();
-        return view('admin.tugas.create', compact('tugas'));
+        $mapel = Mapel::all();
+        return view('admin.tugas.create', compact('mapel'));
     }
 
     /**
@@ -29,32 +33,41 @@ class TugasController extends Controller
      */
     public function store(Request $request)
     {
-        $validate = $request->validate([
-            'judul'       => 'required',
-            'mapel'       => 'required',
-            'jumlah_soal' => 'required',
-            'soal_tugas'  => 'required',
+        $request->validate([
+            'judul'            => 'required|string|max:255',
+            'id_mapel'         => 'required|exists:mapels,id',
+            'jumlah_soal'      => 'required|integer|min:1',
+            'soal'             => 'required|array|min:1',
+            'opsi'             => 'required|array',
+            'jawaban_benar'    => 'required|array',
         ]);
 
-        $tugas              = new Tugas;
-        $tugas->judul       = $request->judul;
-        $tugas->mapel       = $request->mapel;
-        $tugas->jumlah_soal = $request->jumlah_soal;
-        $tugas->soal_tugas  = $request->soal_tugas;
+        // Generate Kode tugas
+        $lastTugas = Tugas::latest('id')->first();
+        $lastId   = $lastTugas ? $lastTugas->id : 0;
+        $kodeTugas = 'TGS' . str_pad($lastId + 1, 4, '0', STR_PAD_LEFT);
+        // Buat tugas
+        $tugas = Tugas::create([
+            'kode_tugas'        => $kodeTugas,
+            'judul'            => $request->judul,
+            'id_mapel'         => $request->id_mapel,
+            'jumlah_soal'      => $request->jumlah_soal,
+        ]);
 
-        if ($request->hasFile('foto')) {
-            $img  = $request->file('foto');
-            $name = rand(1000, 9999) . $img->getClientOriginalName();
-            $img->move('storage/tugas', $name);
-            $tugas->foto = $name;
+        // Simpan soal
+        foreach ($request->soal as $i => $pertanyaan) {
+            SoalTugas::create([
+                'tugas_id'       => $tugas->id,
+                'pertanyaan'    => $pertanyaan,
+                'pilihan_a'     => $request->opsi[$i]['A'] ?? '',
+                'pilihan_b'     => $request->opsi[$i]['B'] ?? '',
+                'pilihan_c'     => $request->opsi[$i]['C'] ?? '',
+                'pilihan_d'     => $request->opsi[$i]['D'] ?? '',
+                'jawaban_benar' => $request->jawaban_benar[$i] ?? 'A',
+            ]);
         }
 
-        $tugas->save();
-
-        session()->flash('success', 'Data berhasil ditambahkan');
-
-        return redirect()->route('admin.tugas.index');
-
+        return redirect()->route('tugas.index')->with('success', 'tugas berhasil dibuat!');
     }
 
     /**
@@ -67,55 +80,62 @@ class TugasController extends Controller
 
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        $tugas = Tugas::findOrFail($id);
-        return view('admin.tugas.edit', compact('tugas'));
-    }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        $validate = $request->validate([
-            'judul'       => 'required',
-            'mapel'       => 'required',
-            'jumlah_soal' => 'required',
-            'soal_tugas'  => 'required',
-        ]);
-
-        $tugas              = Tugas::findOrFail($id);
-        $tugas->judul       = $request->judul;
-        $tugas->mapel       = $request->mapel;
-        $tugas->jumlah_soal = $request->jumlah_soal;
-        $tugas->soal_tugas  = $request->soal_tugas;
-
-        if ($request->hasFile('foto')) {
-            $tugas->deleteImage();
-            $img  = $request->file('foto');
-            $name = rand(1000, 9999) . $img->getClientOriginalName();
-            $img->move('storage/tugas', $name);
-            $tugas->foto = $name;
+        public function edit(Tugas $tuga)  // Changed from $tugas to $tuga
+        {
+            $mapel = Mapel::all();
+            $soal = $tuga->soal()->get();
+            return view('admin.tugas.edit', compact('tuga', 'soal', 'mapel'));
         }
+    
+        public function update(Request $request, Tugas $tuga)  // Changed from $tugas to $tuga
+        {
+            $request->validate([
+                'judul'            => 'required|string|max:255',
+                'id_mapel'         => 'required|exists:mapels,id',
+                'soal'             => 'required|array',
+                'soal.*'           => 'required|string',
+                'opsi'             => 'required|array',
+                'opsi.*'           => 'required|array',
+                'opsi.*.A'         => 'required|string',
+                'opsi.*.B'         => 'required|string',
+                'opsi.*.C'         => 'required|string',
+                'opsi.*.D'         => 'required|string',
+                'jawaban_benar'    => 'required|array',
+                'jawaban_benar.*'  => 'required|in:A,B,C,D',
+            ]);
+    
+            // Update tugas (using $tuga instead of $tugas)
+            $tuga->update([
+                'judul'    => $request->judul,
+                'id_mapel' => $request->id_mapel,
+            ]);
+    
+            // Update soal
+            $soalList = $tuga->soal()->get();
+            
+            foreach ($soalList as $index => $soal) {
+                if (isset($request->soal[$index])) {
+                    $soal->update([
+                        'pertanyaan'    => $request->soal[$index],
+                        'pilihan_a'     => $request->opsi[$index]['A'],
+                        'pilihan_b'     => $request->opsi[$index]['B'],
+                        'pilihan_c'     => $request->opsi[$index]['C'],
+                        'pilihan_d'     => $request->opsi[$index]['D'],
+                        'jawaban_benar' => $request->jawaban_benar[$index],
+                    ]);
+                }
+            }
+    
+            return redirect()->route('tugas.index')->with('success', 'Tugas berhasil diperbarui!');
+        }
+    
 
-        $tugas->save();
-        session()->flash('success', 'Data Berhasil diedit');
-        return redirect()->route('tugas.index');
-
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(string $id)
     {
         $tugas = Tugas::findOrFail($id);
         $tugas->delete();
-        return redirect()->route('tugas.index');
 
+        return redirect()->route('tugas.index')->with('success', 'tugas berhasil dihapus.');
     }
 }

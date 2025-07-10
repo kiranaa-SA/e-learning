@@ -5,6 +5,9 @@ use App\Http\Controllers\MapelController;
 use App\Http\Controllers\GuruController;
 use App\Http\Controllers\SiswaController;
 use App\Http\Controllers\QuizController;
+use App\Http\Controllers\TugasController;
+use App\Http\Controllers\MateriController;
+use App\Http\Controllers\KelasController;
 
 /*
 |--------------------------------------------------------------------------
@@ -24,6 +27,10 @@ Route::resource('guru', GuruController::class);
 Route::resource('siswa', SiswaController::class);
 Route::resource('mapel', MapelController::class);
 Route::resource('quiz', QuizController::class);
+Route::resource('tugas', TugasController::class);
+Route::resource('materi', MateriController::class);
+Route::resource('kelas', KelasController::class);
+
 
 Auth::routes();
 

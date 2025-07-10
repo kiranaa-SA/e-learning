@@ -17,8 +17,10 @@ return new class extends Migration
             $table->id();
             $table->string('kode_tugas')->unique();
             $table->string('judul');
-            $table->text('soal_tugas');
+            $table->integer('jumlah_soal');
+            $table->unsignedBigInteger('id_mapel');
             $table->timestamps();
+            $table->foreign('id_mapel')->references('id')->on('mapels')->onDelete('cascade');
         });
     }
 
