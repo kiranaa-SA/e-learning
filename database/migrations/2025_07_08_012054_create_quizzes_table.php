@@ -17,8 +17,8 @@ return new class extends Migration
             $table->id();
             $table->string('kode_quiz')->unique();
             $table->string('judul');
-            $table->text('soal_quiz');
-            $table->date('waktu_pengerjaan');
+            $table->integer('jumlah_soal');
+            $table->integer('waktu_pengerjaan');
             $table->date('tenggat_waktu');
             $table->timestamps();
         });
