@@ -15,10 +15,14 @@ return new class extends Migration
     {
         Schema::create('jawaban_tugas', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('id_user');
             $table->unsignedBigInteger('id_tugas');
+            $table->unsignedBigInteger('id_soal_tugas');
             $table->text('isi_jawaban');
             $table->timestamps();
             $table->foreign('id_tugas')->references('id')->on('tugas')->onDelete('cascade');
+            $table->foreign('id_soal_tugas')->references('id')->on('soal_tugas')->onDelete('cascade');
+            $table->foreign('id_user')->references('id')->on('user')->onDelete('cascade');
         });
     }
 

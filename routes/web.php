@@ -8,6 +8,8 @@ use App\Http\Controllers\QuizController;
 use App\Http\Controllers\TugasController;
 use App\Http\Controllers\MateriController;
 use App\Http\Controllers\KelasController;
+use App\Http\Controllers\FrontController;
+use App\Http\Middleware\RoleMiddleware;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,16 +22,41 @@ use App\Http\Controllers\KelasController;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
-Route::resource('guru', GuruController::class);
+Route::get('/', [FrontController::class, 'index'])->name('welcome');
+
+
 Route::resource('siswa', SiswaController::class);
 Route::resource('mapel', MapelController::class);
 Route::resource('quiz', QuizController::class);
 Route::resource('tugas', TugasController::class);
 Route::resource('materi', MateriController::class);
 Route::resource('kelas', KelasController::class);
+
+
+// Public
+Route::get('/', [FrontController::class, 'index'])->name('welcome');
+Route::get('/quizz', [FrontController::class, 'quizz'])->name('quizz');
+Route::get('/tugass', [FrontController::class, 'tugass'])->name('tugass');
+
+// Admin only
+Route::prefix('admin')->middleware(['auth', 'role:admin'])->group(function () {
+    Route::resource('guru', GuruController::class);
+    Route::resource('mapel', MapelController::class);
+    Route::resource('kelas', KelasController::class);
+});
+
+// Guru and Admin
+Route::middleware(['auth', 'role:guru,admin'])->group(function () {
+    Route::resource('quiz', QuizController::class);
+    Route::resource('tugas', TugasController::class);
+    Route::resource('materi', MateriController::class);
+});
+
+// Siswa
+Route::middleware(['auth', 'role:siswa'])->group(function () {
+    // route khusus siswa bisa ditaruh di sini
+});
+
 
 
 Auth::routes();

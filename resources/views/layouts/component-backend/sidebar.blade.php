@@ -21,6 +21,7 @@
                     <span class="text">Dashboard</span>
                 </a>
             </li>
+            @if(Auth::user()->role === 'admin')
             <li class="nav-item">
                 <a href="{{ route('guru.index')}}">
                     <span class="icon">
@@ -37,6 +38,7 @@
                     <span class="text">Guru</span>
                 </a>
             </li>
+            @endif
             <li class="nav-item">
                 <a href="{{ route('siswa.index')}}">
                     <span class="icon">

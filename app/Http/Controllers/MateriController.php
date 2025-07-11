@@ -16,6 +16,7 @@ class MateriController extends Controller
         $materi = Materi::all();
         $mapel  = Mapel::all();
         $kelas  = Kelas::all();
+
         return view('admin.materi.index', compact('materi', 'mapel', 'kelas'));
 
     }

@@ -1,33 +1,34 @@
 <?php
-
 namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class RoleMiddleware
 {
     /**
      * Handle an incoming request.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure(\Illuminate\Http\Request): (\Illuminate\Http\Response|\Illuminate\Http\RedirectResponse)  $next
-     * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
      */
     public function handle(Request $request, Closure $next, ...$roles)
     {
-        if (!Auth::check()) {
+        if (! Auth::check()) {
             return redirect('/login');
         }
 
         $user = Auth::user();
 
+        // Jika user memiliki salah satu role yang diizinkan, lanjutkan
         if (in_array($user->role, $roles)) {
             return $next($request);
         }
-        if ($request->routeIs('karyawan.*')&& Auth::user()->is_admin !== 1) {
-                    abort(403, 'Anda tidak memiliki akses');
-                }
+
+        // Tambahan pengecekan khusus jika diperlukan
+        if ($request->routeIs('guru.*') && $user->role !== 'admin') {
+            abort(403, 'Anda tidak memiliki akses ke halaman guru.');
+        }
+
+        // Default: akses ditolak
         abort(403, 'Anda tidak memiliki akses.');
     }
 }
