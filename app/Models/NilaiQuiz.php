@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class NilaiQuiz extends Model
 {
     use HasFactory;
-    protected $fillable = ['id','id_user','id_quiz','skor','create_at','update_at'];
+    protected $fillable = ['id','id_user','id_quiz','nilai','create_at','update_at'];
     public $timestamps = true;
 
     public function user(){

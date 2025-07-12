@@ -92,7 +92,7 @@
   <div class="container">
     <div class="row">
       <div class="col-lg-12 text-center">
-        <h1 class="text-white">TUGAS</h1>
+        <h1 class="text-white">quiz</h1>
       </div>
     </div>
   </div>
@@ -103,7 +103,7 @@
   <div class="services section" id="services">
     <div class="container">
       <div class="row justify-content-center">
-        @foreach ($tugas as $item)
+        @foreach ($quiz as $item)
         <div class="col-lg-4 col-md-6 mb-4">
           <div class="service-item">
             <div class="main-content">
@@ -114,7 +114,7 @@
                 @if(now()->gt($item->tenggat_waktu))
                   <span class="badge bg-danger">Tenggat Berakhir</span>
                 @else
-                  <a href="{{ route('user.tugas.kerjakan', $item->id) }}" class="btn btn-primary">Kerjakan</a>
+                  <a href="{{ route('user.quiz.kerjakan', $item->id) }}" class="btn btn-primary">Kerjakan</a>
                 @endif
               </div>
             </div>

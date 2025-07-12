@@ -42,6 +42,8 @@
               <input type="hidden" name="judul" value="{{ $judul }}">
               <input type="hidden" name="id_mapel" value="{{ $id_mapel }}">
               <input type="hidden" name="jumlah_soal" value="{{ $jumlah_soal }}">
+              <input type="hidden" name="tenggat_waktu" value="{{ request('tenggat_waktu') }}">
+
 
 
               @for($i = 0; $i < $jumlah_soal; $i++)
@@ -70,7 +72,7 @@
           {{-- Bagian 2: Form input metadata quiz --}}
           @else
             <div class="card-style mb-30">
-              <h6 class="mb-25">Informasi Quiz</h6>
+              <h6 class="mb-25">Informasi Tugas</h6>
               <form action="" method="get">
                 <div class="input-style-1">
                   <label>Judul</label>
@@ -94,6 +96,10 @@
                 <div class="input-style-1">
                   <label>Jumlah Soal</label>
                   <input type="number" name="jumlah_soal" min="1" required />
+                </div>
+                <div class="input-style-1">
+                  <label>Tenggat Waktu</label>
+                  <input type="datetime-local" name="tenggat_waktu" class="form-control" required>
                 </div>
 
                 <div class="col-12">

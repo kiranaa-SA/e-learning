@@ -58,6 +58,9 @@
                                             <th class="lead-company">
                                                 <h6>Jumlah Soal</h6>
                                             </th>
+                                            <th class="lead-company">
+                                                <h6>Tenggat waktu</h6>
+                                            </th>
                                             </th>
                                         
                                             <th>
@@ -88,6 +91,9 @@
                                                 </td>
                                                 <td class="min-width">
                                                     <p>{{ $data->jumlah_soal }}</p>
+                                                </td>
+                                                <td class="min-width">
+                                                    <p>{{ $data->tenggat_waktu->format('d M Y H:i') }}</p>
                                                 </td>
                                                 
                                                 <td>

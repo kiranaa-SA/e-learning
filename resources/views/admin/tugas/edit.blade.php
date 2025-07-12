@@ -71,6 +71,10 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="input-style-1">
+                                <label>Tenggat Waktu</label>
+                                <input type="datetime-local" name="tenggat_waktu" class="form-control" value="{{ old('tenggat_waktu', $tuga->tenggat_waktu) }}"  r>
+                            </div>
                         </div>
 
                         @foreach ($tuga->soal as $i => $item)

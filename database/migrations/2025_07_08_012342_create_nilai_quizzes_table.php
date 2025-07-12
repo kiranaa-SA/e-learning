@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('id_user');
             $table->unsignedBigInteger('id_quiz');
-            $table->string('skor');
+            $table->string('nilai');
             $table->timestamps();
             $table->foreign('id_user')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('id_quiz')->references('id')->on('quizzes')->onDelete('cascade');

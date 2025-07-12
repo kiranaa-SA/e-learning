@@ -5,7 +5,7 @@ use App\Models\Quiz;
 use App\Models\SoalQuiz;
 use App\Models\Mapel;
 use Illuminate\Http\Request;
-
+use Carbon\Carbon;
 class QuizController extends Controller
 {
     /**
@@ -35,7 +35,7 @@ public function store(Request $request)
 {
     $request->validate([
         'judul' => 'required|string|max:255',
-        'waktu_pengerjaan' => 'required|integer|min:1',
+        'durasi' => 'required|integer|min:1',
         'tenggat_waktu' => 'required|date',
         'id_mapel' => 'required|exists:mapels,id',
         'jumlah_soal' => 'required|integer|min:1',
@@ -54,8 +54,8 @@ public function store(Request $request)
         'judul' => $request->judul,
         'id_mapel' => $request->id_mapel,
         'jumlah_soal' => $request->jumlah_soal,
-        'waktu_pengerjaan' => $request->waktu_pengerjaan,
-        'tenggat_waktu' => $request->tenggat_waktu,
+        'durasi' => $request->durasi,
+         'tenggat_waktu' => Carbon::parse($request->tenggat_waktu),
     ]);
 
     // Simpan soal
@@ -67,7 +67,7 @@ public function store(Request $request)
             'pilihan_b' => $request->opsi[$i]['B'] ?? '',
             'pilihan_c' => $request->opsi[$i]['C'] ?? '',
             'pilihan_d' => $request->opsi[$i]['D'] ?? '',
-            'jawaban_benar' => $request->jawaban_benar[$i] ?? 'A',
+            'jawaban_benar' => $request->jawaban_benar[$i] ?? 'B',
         ]);
     }
 
@@ -102,7 +102,7 @@ public function update(Request $request, Quiz $quiz)
 {
     $request->validate([
         'judul' => 'required',
-        'waktu_pengerjaan' => 'required|integer|min:1',
+        'durasi' => 'required|integer|min:1',
         'tenggat_waktu' => 'required|date',
         'soal' => 'required|array',
         'opsi' => 'required|array',
@@ -112,8 +112,8 @@ public function update(Request $request, Quiz $quiz)
     $quiz->update([
         'judul' => $request->judul,
         'id_mapel' => $request->id_mapel,
-        'waktu_pengerjaan' => $request->waktu_pengerjaan,
-        'tenggat_waktu' => $request->tenggat_waktu,
+        'durasi' => $request->durasi,
+         'tenggat_waktu' => Carbon::parse($request->tenggat_waktu),
     ]);
 
     foreach ($quiz->soal as $i => $soal) {

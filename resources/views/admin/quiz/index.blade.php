@@ -92,7 +92,7 @@
                                                     <p>{{ $data->jumlah_soal }}</p>
                                                 </td>
                                                 <td class="min-width">
-                                                    <p>{{ $data->waktu_pengerjaan }} mnt</p>
+                                                    <p>{{ $data->durasi }} mnt</p>
                                                 </td>
                                                 <td>
                                                     <div class="action justify-content">

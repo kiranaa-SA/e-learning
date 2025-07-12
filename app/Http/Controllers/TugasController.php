@@ -5,6 +5,7 @@ use App\Models\Mapel;
 use App\Models\Tugas;
 use App\Models\SoalTugas;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 
 class TugasController extends Controller
 {
@@ -25,6 +26,7 @@ class TugasController extends Controller
     public function create()
     {
         $mapel = Mapel::all();
+        $tugas = Tugas::all();
         return view('admin.tugas.create', compact('mapel'));
     }
 
@@ -52,6 +54,7 @@ class TugasController extends Controller
             'judul'            => $request->judul,
             'id_mapel'         => $request->id_mapel,
             'jumlah_soal'      => $request->jumlah_soal,
+            'tenggat_waktu' => Carbon::parse($request->tenggat_waktu),
         ]);
 
         // Simpan soal
@@ -84,6 +87,8 @@ class TugasController extends Controller
         public function edit(Tugas $tuga)  // Changed from $tugas to $tuga
         {
             $mapel = Mapel::all();
+
+
             $soal = $tuga->soal()->get();
             return view('admin.tugas.edit', compact('tuga', 'soal', 'mapel'));
         }
@@ -109,6 +114,7 @@ class TugasController extends Controller
             $tuga->update([
                 'judul'    => $request->judul,
                 'id_mapel' => $request->id_mapel,
+                'tenggat_waktu' => Carbon::parse($request->tenggat_waktu),
             ]);
     
             // Update soal

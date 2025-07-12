@@ -17,9 +17,18 @@ class SoalQuiz extends Model
         'pilihan_d',
         'jawaban_benar',
     ];
-
-    public function quiz()
+public function quiz()
     {
-        return $this->belongsTo(Quiz::class);
+        return $this->belongsTo(Quiz::class, 'quiz_id');
+    }
+
+    public function getPilihanAttribute()
+    {
+        return [
+            'A' => $this->pilihan_a,
+            'B' => $this->pilihan_b,
+            'C' => $this->pilihan_c,
+            'D' => $this->pilihan_d,
+        ];
     }
 }

@@ -10,6 +10,7 @@ use App\Http\Controllers\MateriController;
 use App\Http\Controllers\KelasController;
 use App\Http\Controllers\FrontController;
 use App\Http\Controllers\UserTugasController;
+use App\Http\Controllers\UserQuizController;
 use App\Http\Middleware\RoleMiddleware;
 
 /*
@@ -32,11 +33,16 @@ Route::resource('quiz', QuizController::class);
 Route::resource('tugas', TugasController::class);
 Route::resource('materi', MateriController::class);
 Route::resource('kelas', KelasController::class);
+
 Route::middleware(['auth'])->prefix('user')->name('user.')->group(function () {
     Route::get('/tugas', [UserTugasController::class, 'index'])->name('tugas.index');
     Route::get('/tugas/{id}/kerjakan', [UserTugasController::class, 'kerjakan'])->name('tugas.kerjakan');
     Route::post('/tugas/{id}/submit', [UserTugasController::class, 'submit'])->name('tugas.submit');
     Route::get('/tugas/{id}/hasil', [UserTugasController::class, 'hasil'])->name('tugas.hasil');
+    Route::get('/quiz', [UserQuizController::class, 'index'])->name('quiz.index');
+    Route::get('/quiz/{id}/kerjakan', [UserQuizController::class, 'kerjakan'])->name('quiz.kerjakan');
+    Route::post('/quiz/{id}/submit', [UserQuizController::class, 'submit'])->name('quiz.submit');
+    Route::get('/quiz/{id}/hasil', [UserQuizController::class, 'hasil'])->name('quiz.hasil');
 });
 
 
@@ -60,9 +66,6 @@ Route::prefix('admin')->middleware(['auth', 'role:admin'])->group(function () {
 // });
 
 // Siswa
-Route::middleware(['auth', 'role:siswa'])->group(function () {
-    // route khusus siswa bisa ditaruh di sini
-});
 
 
 

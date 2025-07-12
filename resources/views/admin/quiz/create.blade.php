@@ -35,7 +35,7 @@
               $judul = request('judul');
               $id_mapel = request('id_mapel');
               $jumlah_soal = request('jumlah_soal');
-              $waktu_pengerjaan = request('waktu_pengerjaan');
+              $durasi = request('durasi');
               $tenggat_waktu = request('tenggat_waktu');
             @endphp
 
@@ -44,7 +44,7 @@
               <input type="hidden" name="judul" value="{{ $judul }}">
               <input type="hidden" name="id_mapel" value="{{ $id_mapel }}">
               <input type="hidden" name="jumlah_soal" value="{{ $jumlah_soal }}">
-              <input type="hidden" name="waktu_pengerjaan" value="{{ $waktu_pengerjaan }}">
+              <input type="hidden" name="durasi" value="{{ $durasi }}">
               <input type="hidden" name="tenggat_waktu" value="{{ $tenggat_waktu }}">
 
               @for($i = 0; $i < $jumlah_soal; $i++)
@@ -100,7 +100,7 @@
 
                 <div class="input-style-1">
                   <label>Waktu Pengerjaan (menit)</label>
-                  <input type="number" name="waktu_pengerjaan" min="1" required />
+                  <input type="number" name="durasi" min="1" required />
                 </div>
 
                 <div class="input-style-1">

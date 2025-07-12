@@ -19,6 +19,10 @@ class UserTugasController extends Controller
     public function kerjakan($id)
     {
         $tugas = Tugas::with('soal')->findOrFail($id);
+        if (now()->gt($tugas->tenggat_waktu)) {
+            return redirect()->back()->with('error', 'Tugas sudah lewat tenggat waktu.');
+        }
+
         return view('user.tugas.kerjakan', compact('tugas'));
     }
 
@@ -28,7 +32,7 @@ class UserTugasController extends Controller
         $tugas = Tugas::with('soal')->findOrFail($id);
         $jawabanUser = $request->jawaban;
         $benar = 0;
-        $totalSoal = $tugas->soal->count(); // hitung dari relasi soal yang valid
+        $totalSoal = $tugas->soal->count(); 
 
         foreach ($tugas->soal as $soal) {
             $jawaban = $jawabanUser[$soal->id] ?? null;

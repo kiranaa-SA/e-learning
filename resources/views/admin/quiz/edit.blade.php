@@ -57,8 +57,8 @@
                   </div>
                 </div>
                             <div class="input-style-1">
-                                <label>Waktu Pengerjaan (menit)</label>
-                                <input type="number" name="waktu_pengerjaan" value="{{ $quiz->waktu_pengerjaan }}" required />
+                                <label>Durasi (menit)</label>
+                                <input type="number" name="durasi" value="{{ $quiz->durasi }}" required />
                             </div>
                             <div class="input-style-1">
                                 <label>Tenggat Waktu</label>
