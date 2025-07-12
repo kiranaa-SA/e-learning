@@ -130,28 +130,7 @@
     </div>
   </section>
 
-  <div class="team section" id="team">
-    <div class="container">
-      <div class="row">
-        @foreach( $guru as $data)
-        <div class="col-lg-3 col-md-6">
-          <div class="team-member">
-            <div class="main-content">
-              <img src="{{ asset('frontend/assets/images/member-01.jpg')}}" alt="">
-              <span class="category">ggs</span>
-              <h4>{{ $data->name }}</h4>
-              <ul class="social-icons">
-                <li><a href="#"><i class="fab fa-facebook"></i></a></li>
-                <li><a href="#"><i class="fab fa-twitter"></i></a></li>
-                <li><a href="#"><i class="fab fa-linkedin"></i></a></li>
-              </ul>
-            </div>
-          </div>
-        </div>
-        @endforeach
-      </div>
-    </div>
-  </div> 
+
 
   <div class="section testimonials">
     <div class="container">

@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -21,6 +20,16 @@ class SoalTugas extends Model
 
     public function tugas()
     {
-        return $this->belongsTo(Tugas::class, 'id_tugas'); // Fixed: was Tuiz::class
+        return $this->belongsTo(Tugas::class, 'id_tugas');
+    }
+
+    public function getPilihanAttribute()
+    {
+        return [
+            'A' => $this->pilihan_a,
+            'B' => $this->pilihan_b,
+            'C' => $this->pilihan_c,
+            'D' => $this->pilihan_d,
+        ];
     }
 }

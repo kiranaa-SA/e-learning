@@ -41,6 +41,6 @@ class FrontController extends Controller
         $tugas = Tugas::all();
         $kelas = Kelas::all();
 
-        return view('tugass', compact('tugas','kelas'));
+        return view('tugass', compact('tugass','kelas'));
     }
 }
