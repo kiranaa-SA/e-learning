@@ -1,7 +1,7 @@
 <aside class="sidebar-nav-wrapper">
     <div class="navbar-logo">
         <a href="index.html">
-            <img src="{{ asset('backend/images/logo/logo.svg') }}" alt="logo" />
+            <img src="{{ asset('backend/assets/images/logo/logo.svg') }}" alt="logo" />
         </a>
     </div>
     <nav class="sidebar-nav">
@@ -145,7 +145,7 @@
 
     <div class="promo-box">
         <div class="promo-icon">
-            <img class="mx-auto" src="{{ asset('backend/images/logo/logo-icon-big.svg') }}" alt="Logo">
+            <img class="mx-auto" src="{{ asset('backend/assets/images/logo/logo-icon-big.svg') }}" alt="Logo">
         </div>
         <h3>Upgrade to PRO</h3>
         <p>Improve your development process and start doing more with PlainAdmin PRO!</p>
