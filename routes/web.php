@@ -6,6 +6,7 @@ use App\Http\Controllers\KelasController;
 use App\Http\Controllers\MapelController;
 use App\Http\Controllers\MateriController;
 use App\Http\Controllers\QuizController;
+use App\Http\Controllers\RekapController;
 use App\Http\Controllers\SiswaController;
 use App\Http\Controllers\TugasController;
 use App\Http\Controllers\UserQuizController;
@@ -24,13 +25,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', [FrontController::class, 'index'])->name('welcome');
-
-Route::resource('siswa', SiswaController::class);
-Route::resource('mapel', MapelController::class);
-Route::resource('quiz', QuizController::class);
-Route::resource('tugas', TugasController::class);
-Route::resource('materi', MateriController::class);
-Route::resource('kelas', KelasController::class);
+Route::get('user{id}', [App\Http\Controllers\FrontController::class, 'profil'])->name('profil');
 
 Route::middleware(['auth'])->prefix('user')->name('user.')->group(function () {
     Route::get('/tugas', [UserTugasController::class, 'index'])->name('tugas.index');
@@ -44,6 +39,9 @@ Route::middleware(['auth'])->prefix('user')->name('user.')->group(function () {
 });
 
 // Public
+
+Route::get('/materi/{id}/isi', [FrontController::class, 'isi'])->name('isi');
+
 Route::get('/', [FrontController::class, 'index'])->name('welcome');
 Route::get('/quizz', [FrontController::class, 'quizz'])->name('quizz');
 Route::post('/quiz/{id}/quiz-submit', [FrontController::class, 'quizSubmit'])->name('quizSubmit');
@@ -59,13 +57,13 @@ Route::prefix('admin')->middleware(['auth', 'role:admin'])->group(function () {
 });
 
 // Guru and Admin
-// Route::middleware(['auth', 'role:guru,admin'])->group(function () {
-//     Route::resource('quiz', QuizController::class);
-//     Route::resource('tugas', TugasController::class);
-//     Route::resource('materi', MateriController::class);
-// });
-
-// Siswa
+Route::prefix('guru')->middleware(['auth', 'role:guru'])->group(function () {
+    Route::resource('siswa', SiswaController::class);
+    Route::resource('quiz', QuizController::class);
+    Route::resource('tugas', TugasController::class);
+    Route::resource('materi', MateriController::class);
+    Route::resource('rekap', RekapController::class);
+});
 
 Auth::routes();
 

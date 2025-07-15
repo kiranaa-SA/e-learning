@@ -16,6 +16,7 @@ return new class extends Migration
         Schema::create('materis', function (Blueprint $table) {
             $table->id();
             $table->string('judul');
+            $table->string('foto');
             $table->text('isi_materi');
             $table->unsignedBigInteger('id_mapel');
             $table->unsignedBigInteger('id_kelas');

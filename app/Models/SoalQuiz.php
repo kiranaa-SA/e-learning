@@ -9,7 +9,7 @@ class SoalQuiz extends Model
 {
     use HasFactory; 
         protected $fillable = [
-        'quiz_id',
+        'id_quiz',
         'pertanyaan',
         'pilihan_a',
         'pilihan_b',
@@ -19,7 +19,7 @@ class SoalQuiz extends Model
     ];
 public function quiz()
     {
-        return $this->belongsTo(Quiz::class, 'quiz_id');
+        return $this->belongsTo(Quiz::class, 'id_quiz');
     }
 
     public function getPilihanAttribute()

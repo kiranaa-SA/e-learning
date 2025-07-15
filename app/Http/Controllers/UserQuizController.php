@@ -20,78 +20,69 @@ class UserQuizController extends Controller
     {
         $quiz = Quiz::with('soal')->findOrFail($id);
         if (now()->gt($quiz->tenggat_waktu)) {
-            return redirect()->back()->with('error', 'Quiz sudah lewat tenggat waktu.');
+            return redirect()->back()->with('error', 'Tugas sudah lewat tenggat waktu.');
         }
 
         return view('user.quiz.kerjakan', compact('quiz'));
     }
 
-    // Menyimpan hasil pengerjaan
     public function submit(Request $request, $id)
     {
-        // Validasi input
-        $request->validate([
-            'jawaban'   => 'required|array',
-            'jawaban.*' => 'required|in:A,B,C,D',
-        ]);
+        $quiz         = Quiz::with('soal')->findOrFail($id);
+        $jawabanUser  = $request->jawaban ?? [];
+        $jumlahSoal   = $quiz->soal->count();
+        $jawabanBenar = 0;
 
-        $quiz        = Quiz::with('soal')->findOrFail($id);
-        $jawabanUser = $request->jawaban;
-        $benar       = 0;
-        $totalSoal   = $quiz->soal->count();
-
-        // Cek apakah user sudah pernah mengerjakan quiz ini
-        $existingNilai = NilaiQuiz::where('id_user', Auth::id())
-            ->where('id_quiz', $quiz->id)
-            ->first();
-
-        if ($existingNilai) {
-            return redirect()->route('user.quiz.hasil', $quiz->id)
-                ->with('info', 'Anda sudah mengerjakan quiz ini sebelumnya.');
-        }
-
-        // Proses setiap jawaban
         foreach ($quiz->soal as $soal) {
-            $jawabanTerpilih = $jawabanUser[$soal->id] ?? null;
-            $isCorrect       = $jawabanTerpilih && $jawabanTerpilih === $soal->jawaban_benar;
+            $jawaban   = $jawabanUser[$soal->id] ?? null;
+            $isCorrect = $jawaban === $soal->jawaban_benar;
 
-            // Simpan jawaban user
+            // Simpan jawaban walaupun kosong
             JawabanQuiz::create([
                 'id_user' => Auth::id(),
                 'id_quiz' => $quiz->id,
                 'id_soal' => $soal->id,
-                'jawaban' => $jawabanTerpilih,
+                'jawaban' => $jawaban,
                 'benar'   => $isCorrect,
             ]);
 
-            // Hitung jawaban benar
             if ($isCorrect) {
-                $benar++;
+                $jawabanBenar++;
             }
         }
 
-        // Hitung nilai
-        $nilai = ($totalSoal == 0) ? 0 : ($benar / $totalSoal) * 100;
+        $nilai = $jumlahSoal > 0 ? ($jawabanBenar / $jumlahSoal) * 100 : 0;
 
-        // Simpan nilai quiz
-        NilaiQuiz::create([
-            'id_user' => Auth::id(),
-            'id_quiz' => $quiz->id,
-            'nilai'   => $nilai,
-        ]);
+        NilaiQuiz::updateOrCreate(
+            ['id_user' => Auth::id(), 'id_quiz' => $quiz->id],
+            ['nilai' => $nilai]
+        );
 
-        return redirect()->route('user.quiz.hasil', $quiz->id)
-            ->with('success', 'Quiz berhasil diselesaikan! Nilai Anda: ' . round($nilai, 2));
+        return redirect()->route('user.quiz.hasil', $quiz->id)->with('success', 'Nilai Anda: ' . round($nilai));
     }
 
     // Melihat hasil
     public function hasil($id)
     {
-        $hasil = NilaiQuiz::where('id_user', Auth::id())
+        $hasil = \App\Models\NilaiQuiz::where('id_user', Auth::id())
             ->where('id_quiz', $id)
-            ->with('quiz')
             ->firstOrFail();
 
-        return view('user.quiz.hasil', compact('hasil'));
+        return view('user.quiz.hasil', [
+            'nilai'   => $hasil->nilai,
+            'quiz_id' => $id,
+        ]);
+    }
+
+    public function periksa_kode(Request $request)
+    {
+        $request->validate([
+            'kode' => 'required|string',
+        ]);
+
+        $quiz = Quiz::where('kode_quiz', $request->kode)->first();
+
+        return view('user.periksa_kode', compact('quiz'));
+
     }
 }

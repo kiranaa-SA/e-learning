@@ -49,6 +49,9 @@
                                             <th class="lead-info">
                                                 <h6>Judul</h6>
                                             </th>
+                                                </th>
+                                             <th class="lead-info">
+                                                <h6>Foto</h6>
                                             <th class="lead-email">
                                                 <h6>Isi Materi</h6>
                                             </th>
@@ -78,8 +81,15 @@
                                                 <td class="min-width">
                                                     <p>{{ $data->judul }}</p>
                                                 </td>
+                                                  <td>
+                                                @if ($data->foto)
+                                                    <img src="{{ asset('storage/materi/' . $data->foto) }}" alt="Foto Materi" width="100">
+                                                @else
+                                                    <span>Tidak ada gambar</span>
+                                                @endif
+                                            </td>
                                                 <td class="min-width">
-                                                    <p>{{ $data->isi_materi }}</p>
+                                                     <p>{{ Str::limit($data->isi_materi, 100) }}</p>
                                                 </td>
                                                 <td class="min-width">
                                                     <p>{{ $data->mapel->nama_mapel }}</p>

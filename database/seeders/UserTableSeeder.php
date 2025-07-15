@@ -1,11 +1,9 @@
 <?php
-
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
-use App\Models\User;
 
 class UserTableSeeder extends Seeder
 {
@@ -16,20 +14,20 @@ class UserTableSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('users')->delete(); 
+        DB::table('users')->delete();
 
         User::create([
-            'name' => 'Admin',
-            'email' => 'admin@gmail.com',
+            'name'     => 'Admin',
+            'email'    => 'admin@gmail.com',
             'password' => bcrypt('password'),
-            'role' => 'admin',
+            'role'     => 'admin',
         ]);
 
         User::create([
-            'name' => 'guru',
-            'email' => 'guru@gmail.com',
+            'name'     => 'guru',
+            'email'    => 'guru@gmail.com',
             'password' => bcrypt('guru1234'),
-            'role' => 'guru',
+            'role'     => 'guru',
         ]);
     }
 }

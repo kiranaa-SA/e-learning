@@ -32,6 +32,10 @@ https://templatemo.com/tm-586-scholar
 <body>
 
   <!-- ***** Preloader Start ***** -->
+ 
+<body>
+
+  <!-- ***** Preloader Start ***** -->
   <div id="js-preloader" class="js-preloader">
     <div class="preloader-inner">
       <span class="dot"></span>
@@ -51,9 +55,9 @@ https://templatemo.com/tm-586-scholar
 
 @include('layouts.component-frontend.footer')
 
-  <!-- Scripts -->
-  <!-- Bootstrap core JavaScript -->
-  <script src="{{ asset('frontend/vendor/jquery/jquery.min.js')}}"></script>
+<!-- Scripts -->
+<!-- Bootstrap core JavaScript -->
+<script src="{{ asset('frontend/vendor/jquery/jquery.min.js')}}"></script>
   <script src="{{ asset('frontend/vendor/bootstrap/js/bootstrap.min.js')}}"></script>
   <script src="{{ asset('frontend/assets/js/isotope.min.js')}}"></script>
   <script src="{{ asset('frontend/assets/js/owl-carousel.js')}}"></script>

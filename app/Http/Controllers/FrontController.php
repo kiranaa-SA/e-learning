@@ -1,15 +1,16 @@
 <?php
 namespace App\Http\Controllers;
 
-use App\Models\JawabanQuiz;
 use App\Models\Kelas;
 use App\Models\Materi;
 use App\Models\NilaiQuiz;
 use App\Models\Quiz;
+use App\Models\JawabanQuiz;
 use App\Models\Tugas;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+
 
 class FrontController extends Controller
 {
@@ -31,7 +32,22 @@ class FrontController extends Controller
 
         return view('welcome', compact('materi', 'kelas', 'guru', 'quiz'));
     }
-    public function quizz(Request $request)
+
+    public function tugass()
+    {
+        $tugas = Tugas::all();
+        $kelas = Kelas::all();
+
+        return view('tugass', compact('tugass', 'kelas'));
+    }
+
+    public function isi($id)
+    {
+        $materi = Materi::findOrFail($id);
+        return view('isi', compact('materi'));
+    }
+
+     public function quizz(Request $request)
     {
         $quiz  = Quiz::all();
         $kelas = Kelas::all();
@@ -55,7 +71,7 @@ class FrontController extends Controller
     {
         $quiz = Quiz::with('soal')->where('kode_quiz', $kode)->first();
 
-        return view('kerjakan', compact('quiz'));
+        return view('user.quiz.kerjakan', compact('quiz'));
     }
 
     // Menyimpan hasil pengerjaan
@@ -101,14 +117,13 @@ class FrontController extends Controller
             }
         }
 
-        return view('hasil', compact('nilai'));
+        return view('user.quiz.hasil', compact('nilai'));
     }
 
-    public function tugass()
-    {
-        $tugas = Tugas::all();
-        $kelas = Kelas::all();
 
-        return view('tugass', compact('tugass', 'kelas'));
+    public function profil($id)
+    {
+        $user = User::findOrFail($id);
+        return view('profil', compact('user'));
     }
 }

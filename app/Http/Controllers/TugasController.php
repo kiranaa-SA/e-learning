@@ -2,10 +2,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Mapel;
-use App\Models\Tugas;
 use App\Models\SoalTugas;
-use Illuminate\Http\Request;
+use App\Models\Tugas;
 use Carbon\Carbon;
+use Illuminate\Http\Request;
 
 class TugasController extends Controller
 {
@@ -14,10 +14,9 @@ class TugasController extends Controller
      */
     public function index()
     {
-        $tugas  = Tugas::all();
+        $tugas = Tugas::all();
         $mapel = Mapel::all();
         return view('admin.tugas.index', compact('tugas', 'mapel'));
-
     }
 
     /**
@@ -26,7 +25,6 @@ class TugasController extends Controller
     public function create()
     {
         $mapel = Mapel::all();
-        $tugas = Tugas::all();
         return view('admin.tugas.create', compact('mapel'));
     }
 
@@ -36,31 +34,27 @@ class TugasController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'judul'            => 'required|string|max:255',
-            'id_mapel'         => 'required|exists:mapels,id',
-            'jumlah_soal'      => 'required|integer|min:1',
-            'soal'             => 'required|array|min:1',
-            'opsi'             => 'required|array',
-            'jawaban_benar'    => 'required|array',
+            'judul'         => 'required|string|max:255',
+            'id_mapel'      => 'required|exists:mapels,id',
+            'jumlah_soal'   => 'required|integer|min:1',
+            'tenggat_waktu' => 'required|date',
         ]);
 
-        // Generate Kode tugas
         $lastTugas = Tugas::latest('id')->first();
-        $lastId   = $lastTugas ? $lastTugas->id : 0;
+        $lastId    = $lastTugas ? $lastTugas->id : 0;
         $kodeTugas = 'TGS' . str_pad($lastId + 1, 4, '0', STR_PAD_LEFT);
-        // Buat tugas
+
         $tugas = Tugas::create([
-            'kode_tugas'        => $kodeTugas,
-            'judul'            => $request->judul,
-            'id_mapel'         => $request->id_mapel,
-            'jumlah_soal'      => $request->jumlah_soal,
+            'kode_tugas'    => $kodeTugas,
+            'judul'         => $request->judul,
+            'id_mapel'      => $request->id_mapel,
+            'jumlah_soal'   => $request->jumlah_soal,
             'tenggat_waktu' => Carbon::parse($request->tenggat_waktu),
         ]);
 
-        // Simpan soal
         foreach ($request->soal as $i => $pertanyaan) {
             SoalTugas::create([
-                'id_tugas'       => $tugas->id,
+                'id_tugas'      => $tugas->id,
                 'pertanyaan'    => $pertanyaan,
                 'pilihan_a'     => $request->opsi[$i]['A'] ?? '',
                 'pilihan_b'     => $request->opsi[$i]['B'] ?? '',
@@ -70,7 +64,7 @@ class TugasController extends Controller
             ]);
         }
 
-        return redirect()->route('tugas.index')->with('success', 'tugas berhasil dibuat!');
+        return redirect()->route('tugas.index')->with('success', 'Tugas berhasil dibuat!');
     }
 
     /**
@@ -80,68 +74,71 @@ class TugasController extends Controller
     {
         $tugas = Tugas::findOrFail($id);
         return view('admin.tugas.show', compact('tugas'));
-
     }
 
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(Tugas $tuga)
+    {
+        $mapel = Mapel::all();
+        $soal  = $tuga->soal()->get();
+        return view('admin.tugas.edit', compact('tuga', 'soal', 'mapel'));
+    }
 
-        public function edit(Tugas $tuga)  // Changed from $tugas to $tuga
-        {
-            $mapel = Mapel::all();
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, Tugas $tuga)
+    {
+        $request->validate([
+            'judul'           => 'required|string|max:255',
+            'id_mapel'        => 'required|exists:mapels,id',
+            'tenggat_waktu'   => 'required|date',
+            'soal'            => 'required|array',
+            'soal.*'          => 'required|string',
+            'opsi'            => 'required|array',
+            'opsi.*'          => 'required|array',
+            'opsi.*.A'        => 'required|string',
+            'opsi.*.B'        => 'required|string',
+            'opsi.*.C'        => 'required|string',
+            'opsi.*.D'        => 'required|string',
+            'jawaban_benar'   => 'required|array',
+            'jawaban_benar.*' => 'required|in:A,B,C,D',
+        ]);
 
+        $tuga->update([
+            'judul'         => $request->judul,
+            'id_mapel'      => $request->id_mapel,
+            'tenggat_waktu' => Carbon::parse($request->tenggat_waktu),
+        ]);
 
-            $soal = $tuga->soal()->get();
-            return view('admin.tugas.edit', compact('tuga', 'soal', 'mapel'));
-        }
-    
-        public function update(Request $request, Tugas $tuga)  // Changed from $tugas to $tuga
-        {
-            $request->validate([
-                'judul'            => 'required|string|max:255',
-                'id_mapel'         => 'required|exists:mapels,id',
-                'soal'             => 'required|array',
-                'soal.*'           => 'required|string',
-                'opsi'             => 'required|array',
-                'opsi.*'           => 'required|array',
-                'opsi.*.A'         => 'required|string',
-                'opsi.*.B'         => 'required|string',
-                'opsi.*.C'         => 'required|string',
-                'opsi.*.D'         => 'required|string',
-                'jawaban_benar'    => 'required|array',
-                'jawaban_benar.*'  => 'required|in:A,B,C,D',
-            ]);
-    
-            // Update tugas (using $tuga instead of $tugas)
-            $tuga->update([
-                'judul'    => $request->judul,
-                'id_mapel' => $request->id_mapel,
-                'tenggat_waktu' => Carbon::parse($request->tenggat_waktu),
-            ]);
-    
-            // Update soal
-            $soalList = $tuga->soal()->get();
-            
-            foreach ($soalList as $index => $soal) {
-                if (isset($request->soal[$index])) {
-                    $soal->update([
-                        'pertanyaan'    => $request->soal[$index],
-                        'pilihan_a'     => $request->opsi[$index]['A'],
-                        'pilihan_b'     => $request->opsi[$index]['B'],
-                        'pilihan_c'     => $request->opsi[$index]['C'],
-                        'pilihan_d'     => $request->opsi[$index]['D'],
-                        'jawaban_benar' => $request->jawaban_benar[$index],
-                    ]);
-                }
+        $soalList = $tuga->soal()->get();
+
+        foreach ($soalList as $index => $soal) {
+            if (isset($request->soal[$index])) {
+                $soal->update([
+                    'pertanyaan'    => $request->soal[$index],
+                    'pilihan_a'     => $request->opsi[$index]['A'],
+                    'pilihan_b'     => $request->opsi[$index]['B'],
+                    'pilihan_c'     => $request->opsi[$index]['C'],
+                    'pilihan_d'     => $request->opsi[$index]['D'],
+                    'jawaban_benar' => $request->jawaban_benar[$index],
+                ]);
             }
-    
-            return redirect()->route('tugas.index')->with('success', 'Tugas berhasil diperbarui!');
         }
-    
 
+        return redirect()->route('tugas.index')->with('success', 'Tugas berhasil diperbarui!');
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
     public function destroy(string $id)
     {
         $tugas = Tugas::findOrFail($id);
         $tugas->delete();
 
-        return redirect()->route('tugas.index')->with('success', 'tugas berhasil dihapus.');
+        return redirect()->route('tugas.index')->with('success', 'Tugas berhasil dihapus.');
     }
 }

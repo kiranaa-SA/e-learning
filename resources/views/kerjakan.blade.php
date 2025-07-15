@@ -191,71 +191,68 @@
 
   <!-- JS & Countdown -->
   <script>
-    const quizDuration = {{ $durationInSeconds }};
-    let timeLeft = quizDuration;
-    const countdownEl = document.getElementById('time');
-    const quizForm = document.getElementById('quizForm');
+  const quizId = {{ $quiz->id }};
+  const quizDuration = {{ $durationInSeconds }}; // dalam detik
+  const countdownEl = document.getElementById('time');
+  const quizForm = document.getElementById('quizForm');
 
-    function formatTime(seconds) {
-      const m = Math.floor(seconds / 60);
-      const s = seconds % 60;
-      return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+  const startKey = 'quiz_' + quizId + '_start';
+  let startTime = localStorage.getItem(startKey);
+
+  // Set waktu mulai jika belum ada
+  if (!startTime) {
+    startTime = Date.now();
+    localStorage.setItem(startKey, startTime);
+  }
+
+  const endTime = parseInt(startTime) + quizDuration * 1000;
+
+  function updateCountdown() {
+    const now = Date.now();
+    const timeLeft = Math.floor((endTime - now) / 1000);
+
+    if (timeLeft <= 0) {
+      countdownEl.textContent = "00:00";
+      localStorage.removeItem('quiz_' + quizId);
+      localStorage.removeItem(startKey);
+      quizForm.submit(); // submit otomatis saat waktu habis
+    } else {
+      const m = String(Math.floor(timeLeft / 60)).padStart(2, '0');
+      const s = String(timeLeft % 60).padStart(2, '0');
+      countdownEl.textContent = ${m}:${s};
     }
+  }
 
-    function updateCountdown() {
-      if (timeLeft <= 0) {
-        countdownEl.textContent = "00:00";
-        localStorage.removeItem('quiz_' + {{ $quiz->id }});
-        quizForm.submit(); // otomatis submit saat habis
-      } else {
-        countdownEl.textContent = formatTime(timeLeft);
-        timeLeft--;
+  updateCountdown();
+  setInterval(updateCountdown, 1000);
+
+  // Simpan jawaban user ke localStorage
+  let answers = {};
+  document.querySelectorAll('input[type="radio"]').forEach(radio => {
+    radio.addEventListener('change', function() {
+      answers[this.name] = this.value;
+      localStorage.setItem('quiz_' + quizId, JSON.stringify(answers));
+    });
+  });
+
+  // Load jawaban dari localStorage
+  window.addEventListener('load', () => {
+    const saved = localStorage.getItem('quiz_' + quizId);
+    if (saved) {
+      const answers = JSON.parse(saved);
+      for (let name in answers) {
+        const radio = document.querySelector(input[name="${name}"][value="${answers[name]}"]);
+        if (radio) radio.checked = true;
       }
     }
+  });
 
-    updateCountdown();
-    setInterval(updateCountdown, 1000);
-
-    // Simpan jawaban ke localStorage
-    let answers = {};
-    document.querySelectorAll('input[type="radio"]').forEach(radio => {
-      radio.addEventListener('change', function() {
-        answers[this.name] = this.value;
-        localStorage.setItem('quiz_' + {{ $quiz->id }}, JSON.stringify(answers));
-      });
-    });
-
-    // Load dari localStorage
-    window.addEventListener('load', () => {
-      const saved = localStorage.getItem('quiz_' + {{ $quiz->id }});
-      if (saved) {
-        const answers = JSON.parse(saved);
-        for (let name in answers) {
-          const radio = document.querySelector(`input[name="${name}"][value="${answers[name]}"]`);
-          if (radio) radio.checked = true;
-        }
-      }
-    });
-
-    // Bersihkan localStorage saat submit
-    quizForm.addEventListener('submit', () => {
-      localStorage.removeItem('quiz_' + {{ $quiz->id }});
-    });
-  </script>
-
-  <!-- Buat seluruh area form-check bisa diklik -->
-  <script>
-    document.querySelectorAll('.form-check').forEach(item => {
-      item.addEventListener('click', function(e) {
-        const radio = this.querySelector('input[type="radio"]');
-        if (radio && !radio.checked) {
-          radio.checked = true;
-          radio.dispatchEvent(new Event('change'));
-        }
-      });
-    });
-  </script>
-
+  // Bersihkan data localStorage saat submit
+  quizForm.addEventListener('submit', () => {
+    localStorage.removeItem('quiz_' + quizId);
+    localStorage.removeItem(startKey);
+  });
+</script>
   <script src="{{ asset('frontend/vendor/jquery/jquery.min.js')}}"></script>
   <script src="{{ asset('frontend/vendor/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
 

@@ -7,7 +7,7 @@
                 <div class="row align-items-center">
                     <div class="col-md-6">
                         <div class="title">
-                            <h2>Data quiz</h2>
+                            <h2>Data Tugas</h2>
                         </div>
                     </div>
                     <!-- end col -->
@@ -19,7 +19,7 @@
                                         <a href="#0">Dashboard</a>
                                     </li>
                                     <li class="breadcrumb-item active" aria-current="page">
-                                        quiz
+                                        tugas
                                     </li>
                                 </ol>
                             </nav>
@@ -47,7 +47,7 @@
                                                 <h6>No</h6>
                                             </th>
                                             <th class="lead-email">
-                                                <h6>Kode quiz</h6>
+                                                <h6>Kode tugas</h6>
                                             </th>
                                             <th class="lead-phone">
                                                 <h6>Judul</h6>
